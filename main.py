@@ -25,22 +25,21 @@ with sync_playwright() as p:
     tables = page.locator("table")
 
     for i in range(tables.count()):
-        tables = tables.nth(i)
-        caption = tables.locator("caption").inner_text().strip().split(',')[0]
-        trs = tables.locator("tr")
+        table = tables.nth(i)
+        trs = table.locator("tr")
 
         for j in range(trs.count()):
             tr = trs.nth(j)
-            td = tr.locator("td")
+            tds = tr.locator("td")
 
-            if td.count() != 3:
+            if tds.count() != 3:
                 continue
         
             for item in lst:
-                if(item['course_time'] in td.nth(0).inner_text() and 
-                   item['course_schedule'] in td.nth(1).inner_text()):
-                    item["final_time"] = td.nth(2).inner_text().strip()
-                    item["final_schedule"] = caption
+                if(item['course_time'] in tds.nth(0).inner_text() and 
+                   item['course_schedule'] in tds.nth(1).inner_text()):
+                    item["final_time"] = tds.nth(2).inner_text().strip()
+                    item["final_schedule"] = table.locator("caption").inner_text().strip().split(',')[0]
                     break
     
     browser.close()
